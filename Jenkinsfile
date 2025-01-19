@@ -70,7 +70,7 @@ pipeline {
             }
             post {
                   always {
-                           publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright HTML Report', reportTitles: '', useWrapperFileDirectly: true])
+                           publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright Local HTML Report', reportTitles: '', useWrapperFileDirectly: true])
                         }
                  }
          }
@@ -94,6 +94,30 @@ pipeline {
             }
 
 
+         }
+         stage ('PROD E2E deploy'){
+
+            agent {
+                docker {
+                    image 'mcr.microsoft.com/playwright:v1.39.0-jammy'
+                    reuseNode true
+                }
+            }
+
+            environment {
+                CI_ENVIRONMENT_URL ='https://nimble-genie-83fd80.netlify.app'
+            }
+
+            steps {
+                   sh '''
+                       npx playwright test  --reporter=html
+                   '''
+            }
+            post {
+                  always {
+                           publishHTML([allowMissing: false, alwaysLinkToLastBuild: false, keepAll: false, reportDir: 'playwright-report', reportFiles: 'index.html', reportName: 'Playwright E2E Report', reportTitles: '', useWrapperFileDirectly: true])
+                        }
+                 }
          }
          
     }
