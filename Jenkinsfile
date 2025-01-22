@@ -62,7 +62,7 @@ pipeline {
 
             steps {
                    sh '''
-                       echo "added the polling SCM options"
+                       
                        npm install serve
                        node_modules/.bin/serve -s build &
                        sleep 10
